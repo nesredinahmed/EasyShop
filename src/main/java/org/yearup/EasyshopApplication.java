@@ -8,7 +8,6 @@ public class EasyshopApplication
 {
 
     public static void main(String[] args) {
-        System.out.println("TH");
         SpringApplication.run(EasyshopApplication.class, args);
     }
 
