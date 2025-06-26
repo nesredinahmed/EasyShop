@@ -79,7 +79,7 @@ public class AuthenticationController {
             if (exists)
             {
                 Map<String, String> response = new HashMap<>();
-                response.put("message", "User Already Exists.");
+                response.put("ERROR", "User Already Exists.");
 
                 return ResponseEntity
                         .status(HttpStatus.BAD_REQUEST)
