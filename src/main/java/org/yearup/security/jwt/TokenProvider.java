@@ -57,6 +57,8 @@ public class TokenProvider implements InitializingBean
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
+        logger.debug("Creating token for user: {} with authorities: {}", authentication.getName(), authorities);
+
         long now = (new Date()).getTime();
         Date expirationDate = new Date(now + this.tokenTimeout);
 
@@ -76,10 +78,15 @@ public class TokenProvider implements InitializingBean
                 .parseClaimsJws(token)
                 .getBody();
 
+        String authoritiesString = claims.get(AUTHORITIES_KEY).toString();
+        logger.debug("Retrieved authorities from token: {}", authoritiesString);
+
         Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+                Arrays.stream(authoritiesString.split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
+
+        logger.debug("Parsed authorities: {}", authorities);
 
         User principal = new User(claims.getSubject(), "", authorities);
 

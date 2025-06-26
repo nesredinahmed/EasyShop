@@ -9,7 +9,8 @@ public class ShoppingCartItem
     private Product product = null;
     private int quantity = 1;
     private BigDecimal discountPercent = BigDecimal.ZERO;
-
+    private int userId;
+    private int productId;
 
     public Product getProduct()
     {
@@ -41,14 +42,38 @@ public class ShoppingCartItem
         this.discountPercent = discountPercent;
     }
 
-    @JsonIgnore
+    public int getUserId()
+    {
+        return userId;
+    }
+
+    public void setUserId(int userId)
+    {
+        this.userId = userId;
+    }
+
     public int getProductId()
     {
-        return this.product.getProductId();
+        return productId;
+    }
+
+    public void setProductId(int productId)
+    {
+        this.productId = productId;
+    }
+
+    @JsonIgnore
+    public int getProductIdFromProduct()
+    {
+        return this.product != null ? this.product.getProductId() : 0;
     }
 
     public BigDecimal getLineTotal()
     {
+        if (product == null) {
+            return BigDecimal.ZERO;
+        }
+        
         BigDecimal basePrice = product.getPrice();
         BigDecimal quantity = new BigDecimal(this.quantity);
 

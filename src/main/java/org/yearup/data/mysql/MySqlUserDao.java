@@ -153,6 +153,8 @@ public class MySqlUserDao extends MySqlDaoBase implements UserDao
         String hashedPassword = row.getString("hashed_password");
         String role = row.getString("role");
 
+        System.out.println("Loading user from database: " + username + " with role: " + role);
+
         return new User(userId, username,hashedPassword, role);
     }
 }

@@ -41,6 +41,7 @@ public class JWTFilter extends GenericFilterBean {
             Authentication authentication = tokenProvider.getAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             LOG.debug("set Authentication to custom security context for '{}', uri: {}", authentication.getName(), requestURI);
+            LOG.debug("User authorities: {}", authentication.getAuthorities());
         } else {
             LOG.debug("no valid JWT token found, uri: {}", requestURI);
         }

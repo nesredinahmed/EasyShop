@@ -23,25 +23,55 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
     {
         List<Product> products = new ArrayList<>();
 
-        String sql = "SELECT * FROM products " +
-                "WHERE (category_id = ? OR ? = -1) " +
-                "   AND (price <= ? OR ? = -1) " +
-                "   AND (color = ? OR ? = '') ";
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM products WHERE 1=1");
+        
+        // Handle category filter
+        if (categoryId != null) {
+            sqlBuilder.append(" AND category_id = ?");
+        }
+        
+        // Handle min price filter
+        if (minPrice != null) {
+            sqlBuilder.append(" AND price >= ?");
+        }
+        
+        // Handle max price filter
+        if (maxPrice != null) {
+            sqlBuilder.append(" AND price <= ?");
+        }
+        
+        // Handle color filter
+        if (color != null && !color.trim().isEmpty()) {
+            sqlBuilder.append(" AND color = ?");
+        }
 
-        categoryId = categoryId == null ? -1 : categoryId;
-        minPrice = minPrice == null ? new BigDecimal("-1") : minPrice;
-        maxPrice = maxPrice == null ? new BigDecimal("-1") : maxPrice;
-        color = color == null ? "" : color;
+        String sql = sqlBuilder.toString();
 
         try (Connection connection = getConnection())
         {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setInt(1, categoryId);
-            statement.setInt(2, categoryId);
-            statement.setBigDecimal(3, minPrice);
-            statement.setBigDecimal(4, minPrice);
-            statement.setString(5, color);
-            statement.setString(6, color);
+            
+            int paramIndex = 1;
+            
+            // Set category parameter
+            if (categoryId != null) {
+                statement.setInt(paramIndex++, categoryId);
+            }
+            
+            // Set min price parameter
+            if (minPrice != null) {
+                statement.setBigDecimal(paramIndex++, minPrice);
+            }
+            
+            // Set max price parameter
+            if (maxPrice != null) {
+                statement.setBigDecimal(paramIndex++, maxPrice);
+            }
+            
+            // Set color parameter
+            if (color != null && !color.trim().isEmpty()) {
+                statement.setString(paramIndex++, color);
+            }
 
             ResultSet row = statement.executeQuery();
 
@@ -206,6 +236,32 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
         {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<Product> getFeaturedProducts()
+    {
+        List<Product> products = new ArrayList<>();
+
+        String sql = "SELECT * FROM products WHERE featured = true";
+
+        try (Connection connection = getConnection())
+        {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet row = statement.executeQuery();
+
+            while (row.next())
+            {
+                Product product = mapRow(row);
+                products.add(product);
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        return products;
     }
 
     protected static Product mapRow(ResultSet row) throws SQLException

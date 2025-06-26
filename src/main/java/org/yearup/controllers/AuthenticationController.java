@@ -23,6 +23,9 @@ import org.yearup.models.User;
 import org.yearup.security.jwt.JWTFilter;
 import org.yearup.security.jwt.TokenProvider;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @CrossOrigin
 @PreAuthorize("permitAll()")
@@ -68,14 +71,19 @@ public class AuthenticationController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ResponseEntity<User> register(@Valid @RequestBody RegisterUserDto newUser) {
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterUserDto newUser) {
 
         try
         {
             boolean exists = userDao.exists(newUser.getUsername());
             if (exists)
             {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Already Exists.");
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "User Already Exists.");
+
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(response);
             }
 
             // create user
@@ -90,6 +98,9 @@ public class AuthenticationController {
         }
         catch (Exception e)
         {
+            System.out.println("**********************************");
+            System.out.println(e);
+            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
     }

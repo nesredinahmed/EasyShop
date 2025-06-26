@@ -42,6 +42,9 @@ public class UserModelDetailsService implements UserDetailsService {
         List<GrantedAuthority> grantedAuthorities = user.getAuthorities().stream()
                 .map(authority -> new SimpleGrantedAuthority(authority.getName()))
                 .collect(Collectors.toList());
+        
+        log.debug("Creating Spring Security User for '{}' with authorities: {}", lowercaseLogin, grantedAuthorities);
+        
         return new org.springframework.security.core.userdetails.User(user.getUsername(),
                 user.getPassword(),
                 grantedAuthorities);

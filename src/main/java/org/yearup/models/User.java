@@ -70,15 +70,18 @@ public class User {
    }
 
    public void setAuthorities(String authorities) {
+      System.out.println("Setting authorities from string: " + authorities);
       String[] roles = authorities.split(",");
       for(String role : roles) {
          addRole(role);
       }
+      System.out.println("Final authorities set: " + this.authorities);
    }
 
    public void addRole(String role)
    {
       String authority = role.contains("ROLE_") ? role : "ROLE_" + role;
+      System.out.println("Adding role: " + role + " as authority: " + authority);
       this.authorities.add(new Authority(authority));
    }
 
