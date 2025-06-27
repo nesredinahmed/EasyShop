@@ -1,0 +1,22 @@
+This is a test file to verify that the static resources directory is working correctly.
+
+To test image loading:
+1. Start your Spring Boot application
+2. Access: http://localhost:8080/api/images/smartphone.jpg
+3. You should see a placeholder image generated for "smartphone.jpg"
+
+To add real images:
+1. Place your image files in this directory
+2. Make sure the filenames match exactly what's stored in the database
+3. Restart the application if needed
+
+Example image files needed:
+- smartphone.jpg
+- laptop.jpg
+- headphones.jpg
+- mens-tshirt.jpg
+- womens-dress.jpg
+- cookware-set.jpg
+- coffee-maker.jpg
+- knife-set.jpg
+- And many more as referenced in the database 
